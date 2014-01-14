@@ -52,7 +52,8 @@ Router.map(function(){
       this.response.writeHead(200, {'Content-Type': 'text/xml'});
       this.response.end('<?xml version="1.0" encoding="UTF-8"?>\
         <Response><Say voice="woman">Please leave a message after the tone.</Say>\
-        <Record maxLength="20" action="recording_done" method="GET" /></Response>');
+        <Record maxLength="20" action="recording_done" method="GET" />\
+        <Redirect method="GET">recording_cancel</Redirect></Response>');
     }
   });
   this.route("recording_done", {
@@ -65,6 +66,21 @@ Router.map(function(){
       recording.uri = this.params.RecordingUrl;
       recording.recording_sid = this.params.RecordingSid;
       recording.status = "Complete";
+
+      Recordings.update(recording._id, recording);
+
+      this.response.writeHead(200, {'Content-Type': 'text/xml'});
+      this.response.end('<?xml version="1.0" encoding="UTF-8"?><Response><Hangup/></Response>');
+    }
+  });
+  this.route("recording_cancel", {
+    path: '/recording_cancel',
+    where: 'server',
+    action: function() {
+      var recording = Recordings.findOne({'call_sid': this.params.CallSid});
+      recording.date_finished = new Date();
+      recording.duration = 0;
+      recording.status = "Cancelled";
 
       Recordings.update(recording._id, recording);
 
