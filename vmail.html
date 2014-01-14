@@ -1,0 +1,43 @@
+<head>
+  <title>vmail</title>
+</head>
+
+<body>
+	<div class="container">
+		<div class="row">
+			<div class="span12">
+				<div class="hero-unit">
+					<p>This is an example application created using Meteor and the Twilio API. It implements a simple voice mail box.</p>
+					<p>To use it simply call 650-542-7005 and leave a message. Watch the screen while you do. It will update in realtime as callers use the service.</p>
+				</div>
+				{{> status}}
+				<br>
+				{{> messages}}
+			</div>
+		</div>
+	</div>
+</body>
+
+<template name="status">
+	Status section.
+</template>
+
+<template name="messages">
+	<table class="table">
+  		<tr><th>From</th><th>Date/Time</th><th>Duration</th><th>Link</th></tr>
+		{{#each recordings}}
+			<tr>
+				<td>{{call_from}}</td>
+				<td>{{date_started}}</td>
+				<td>{{duration}}</td>
+				<td>
+					{{#if complete}}
+						<a href="{{uri}}">listen</a>
+					{{else}}
+						{{status}}
+					{{/if}}
+				</td>
+			</tr>
+		{{/each}}
+	</table>
+</template>
